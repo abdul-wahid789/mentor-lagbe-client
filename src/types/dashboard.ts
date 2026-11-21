@@ -30,7 +30,7 @@ export interface StatMetric {
 }
 
 export interface TuitionPostItem {
-  id: string;
+  _id?: string;
   title: string;
   subject: string;
   classLevel: string;
@@ -40,13 +40,13 @@ export interface TuitionPostItem {
   daysPerWeek: number;
   description: string;
   bannerUrl?: string;
-  tutorId: string;
-  tutorName: string;
-  tutorEmail: string;
-  approvalStatus: ApprovalStatus;
-  isActive: boolean;
-  applicantsCount: number;
-  createdAt: string;
+  tutorId?: string;
+  tutorName?: string;
+  tutorEmail?: string;
+  approvalStatus?: ApprovalStatus;
+  isActive?: boolean;
+  applicantsCount?: number;
+  createdAt?: string;
 }
 
 export interface StudentApplicationItem {
