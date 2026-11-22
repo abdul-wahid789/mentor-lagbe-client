@@ -48,6 +48,7 @@ import type { DashboardUser } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, type ChangeEvent } from "react";
 import { createTuition } from "@/lib/actions/tuition";
+import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 
 interface PostTuitionFormProps {
     user: DashboardUser;
@@ -276,23 +277,19 @@ export function PostTuitionForm({
             // }
 
 
-            // const response = await createTuition(data)
+            const response = await createTuition(data)
+            if (response.error) {
+                showErrorToast(response.msg);
+            }
 
-
-
-            // const data = await response.json().catch(() => ({}));
-            // if (!response.ok) {
-            //     throw new Error(data?.error || "Failed to create tuition post.");
-            // }
-
-            toast.success("Tuition submitted for Admin approval!");
+            showSuccessToast("Tuition submitted for Admin approval!");
             // router.push("/dashboard/tutor/my-tuitions");
             // router.refresh();
         } catch (err) {
             const message =
                 err instanceof Error ? err.message : "Could not submit tuition.";
             setFormError(message);
-            toast.error(message);
+            showErrorToast(message);
         } finally {
             setStatusText(null);
         }
@@ -300,7 +297,7 @@ export function PostTuitionForm({
 
     const onInvalid = () => {
         setFormError("Please complete all required fields before submitting.");
-        toast.error("Please fix the highlighted fields.");
+        showErrorToast("Please fix the highlighted fields.");
     };
 
     return (

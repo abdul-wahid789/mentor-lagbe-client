@@ -1,7 +1,8 @@
 export interface Response<T> {
-    data?: T,
-    error: boolean,
-    msg: string
+  data?: T;
+  error: boolean;
+  msg: string;
+  received?: string;
 }
 
-export type Method = 'POST' | 'DELETE' | 'PATCH' | 'PUT'
+export type Method = "POST" | "DELETE" | "PATCH" | "PUT";
