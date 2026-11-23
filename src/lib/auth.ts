@@ -19,6 +19,15 @@ export const auth = betterAuth({
       plan: {
         type: ["pro", "free"],
         input: true
+      },
+
+      bio: {
+        type: "string",
+        input: true
+      },
+      phone: {
+        type: "string",
+        input: true
       }
     }
   },
