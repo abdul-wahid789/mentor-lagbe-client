@@ -303,13 +303,13 @@ export function SigninFormCard() {
               )}
             />
 
-            <Button
+            {/* <Button
               variant="link"
               size="sm"
               nativeButton={false}
               className="h-auto p-0 text-xs font-medium text-primary hover:underline underline-offset-2"
               render={<Link href="/forgot-password">Forgot password?</Link>}
-            />
+            /> */}
           </div>
 
           <Button

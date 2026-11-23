@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Plus, X } from "lucide-react";
+import { ImagePlus, Plus, Trash2, X } from "lucide-react";
 import {
   deleteTuition,
   getMyTuitions,
   toggleTuitionStatus,
   updateTuition,
 } from "@/lib/actions/tuition";
+import { uploadAvatarToImgBB, validateAvatarFile } from "@/lib/imgbb";
 import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,6 +48,20 @@ export function MyTuitionsClient() {
   const [editFee, setEditFee] = useState("");
   const [editLocation, setEditLocation] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editBannerUrl, setEditBannerUrl] = useState("");
+  const [editBannerFile, setEditBannerFile] = useState<File | null>(null);
+  const [editBannerPreview, setEditBannerPreview] = useState<string | null>(null);
+  const bannerInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!editBannerFile) {
+      setEditBannerPreview(null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(editBannerFile);
+    setEditBannerPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [editBannerFile]);
 
   useEffect(() => {
     let active = true;
@@ -97,6 +113,21 @@ export function MyTuitionsClient() {
     setEditFee(String(item.monthlyFee));
     setEditLocation(item.location);
     setEditDescription(item.description);
+    setEditBannerUrl(item.bannerUrl || "");
+    setEditBannerFile(null);
+  };
+
+  const handleBannerFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] ?? null;
+    e.target.value = "";
+    if (!selected) return;
+
+    const validationError = validateAvatarFile(selected);
+    if (validationError) {
+      showErrorToast(validationError);
+      return;
+    }
+    setEditBannerFile(selected);
   };
 
   const handleSaveEdit = async () => {
@@ -114,11 +145,25 @@ export function MyTuitionsClient() {
     const rowKey = getItemKey(target, editingIndex);
     setBusyKey(rowKey);
 
+    let finalBannerUrl = editBannerUrl.trim();
+    if (editBannerFile) {
+      try {
+        finalBannerUrl = await uploadAvatarToImgBB(editBannerFile);
+      } catch (err) {
+        setBusyKey(null);
+        showErrorToast(
+          err instanceof Error ? err.message : "Failed to upload banner image."
+        );
+        return;
+      }
+    }
+
     const updatedPayload: Partial<TuitionPostItem> = {
       title: editTitle.trim(),
       monthlyFee: numericFee,
       location: editLocation.trim(),
       description: editDescription.trim(),
+      bannerUrl: finalBannerUrl,
     };
 
     const res = id
@@ -414,7 +459,7 @@ export function MyTuitionsClient() {
 
       {editingIndex !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <Card className="w-full max-w-lg border-border bg-card shadow-lg">
+          <Card className="max-h-[90vh] w-full max-w-lg overflow-y-auto border-border bg-card shadow-lg">
             <CardContent className="space-y-4 p-5 sm:p-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-foreground">
@@ -469,6 +514,84 @@ export function MyTuitionsClient() {
                     onChange={(e) => setEditDescription(e.target.value)}
                     className="w-full rounded-lg border border-input bg-background p-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>Tuition banner</Label>
+                  <div className="rounded-xl border border-border bg-background/70 p-3">
+                    {editBannerPreview || editBannerUrl ? (
+                      <div className="space-y-2.5">
+                        <div className="relative h-36 w-full overflow-hidden rounded-lg border border-border bg-muted">
+                          <Image
+                            src={editBannerPreview || editBannerUrl}
+                            alt="Tuition banner preview"
+                            fill
+                            sizes="(max-width: 640px) 100vw, 512px"
+                            unoptimized={Boolean(editBannerPreview)}
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="truncate text-xs text-muted-foreground">
+                            {editBannerFile
+                              ? `${editBannerFile.name} · Ready to upload`
+                              : "Current banner"}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              disabled={busyKey !== null}
+                              onClick={() => bannerInputRef.current?.click()}
+                              className="h-8 px-3 text-xs font-medium text-primary"
+                            >
+                              Change image
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              disabled={busyKey !== null}
+                              onClick={() => {
+                                setEditBannerFile(null);
+                                setEditBannerUrl("");
+                              }}
+                              className="h-8 border-destructive/25 bg-destructive-tint/60 px-2.5 text-xs font-medium text-destructive"
+                            >
+                              <Trash2 className="mr-1 h-3.5 w-3.5" />
+                              Remove
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-xs text-muted-foreground">
+                          JPG, PNG, WebP, or GIF up to 5 MB
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={busyKey !== null}
+                          onClick={() => bannerInputRef.current?.click()}
+                          className="h-8 border-primary/25 bg-card px-3 text-xs font-semibold text-primary hover:bg-secondary/60"
+                        >
+                          <ImagePlus className="mr-1.5 h-3.5 w-3.5" />
+                          Choose image
+                        </Button>
+                      </div>
+                    )}
+                    <input
+                      ref={bannerInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      disabled={busyKey !== null}
+                      onChange={handleBannerFileSelect}
+                      className="sr-only"
+                    />
+                  </div>
                 </div>
               </div>
 
