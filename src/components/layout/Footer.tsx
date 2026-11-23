@@ -41,9 +41,9 @@ export function Footer() {
               Get in touch
             </p>
             <div className="space-y-1 text-sm text-[#DDD6FE]/90">
-              <p>hello@mentorlagbe.com</p>
+              <p>abdulwahid.contact@gmail.com</p>
               <p className="font-mono text-xs text-[#9D96B8]">
-                +880 1700 000000 · Dhaka, Bangladesh
+                +880 18494 50075 · Dhaka, Bangladesh
               </p>
             </div>
           </div>

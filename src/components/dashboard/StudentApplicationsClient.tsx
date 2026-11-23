@@ -189,7 +189,11 @@ export function StudentApplicationsClient({
                 size="sm"
                 nativeButton={false}
                 className="mt-4 h-9 rounded-lg px-4 text-xs font-semibold"
-                render={<Link href="/tuitions">Browse tuitions</Link>}
+                render={
+                  <Link href="/dashboard/student/tuitions">
+                    Browse tuitions
+                  </Link>
+                }
               />
             </div>
           ) : (
@@ -199,7 +203,9 @@ export function StudentApplicationsClient({
                 <table className="w-full border-collapse text-left">
                   <thead>
                     <tr className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
-                      <th className="rounded-tl-lg px-4 py-3">Tuition &amp; tutor</th>
+                      <th className="rounded-tl-lg px-4 py-3">
+                        Tuition &amp; tutor
+                      </th>
                       <th className="px-4 py-3">Monthly fee</th>
                       <th className="px-4 py-3">Applied on</th>
                       <th className="px-4 py-3">Status</th>
@@ -213,8 +219,10 @@ export function StudentApplicationsClient({
                       const isBusy = deletingId === app.id;
                       const isPending = app.status === "pending";
                       const tuitionHref = app.tuitionId
-                        ? `/tuitions/${app.tuitionId}`
-                        : "/tuitions";
+                        ? `/dashboard/student/tuitions/${encodeURIComponent(
+                            String(app.tuitionId)
+                          )}`
+                        : "/dashboard/student/tuitions";
 
                       return (
                         <tr
@@ -290,8 +298,10 @@ export function StudentApplicationsClient({
                   const isBusy = deletingId === app.id;
                   const isPending = app.status === "pending";
                   const tuitionHref = app.tuitionId
-                    ? `/tuitions/${app.tuitionId}`
-                    : "/tuitions";
+                    ? `/dashboard/student/tuitions/${encodeURIComponent(
+                        String(app.tuitionId)
+                      )}`
+                    : "/dashboard/student/tuitions";
 
                   return (
                     <div

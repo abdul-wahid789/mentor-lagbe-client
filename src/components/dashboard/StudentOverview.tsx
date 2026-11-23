@@ -182,7 +182,7 @@ export function StudentOverview({
                           className="h-7 px-3 text-xs font-medium"
                           nativeButton={false}
                           render={
-                            <Link href={`/tuitions/${app.tuitionId}`}>
+                            <Link href={`/dashboard/student/tuitions/${app.tuitionId}`}>
                               View
                             </Link>
                           }

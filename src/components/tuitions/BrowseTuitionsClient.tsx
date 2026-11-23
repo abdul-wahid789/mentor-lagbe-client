@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 import { getApprovedTuitions } from "@/lib/actions/tuition";
 import { showErrorToast } from "@/lib/toaster";
@@ -32,16 +33,29 @@ function getTuitionId(item: TuitionPostItem, index: number): string {
 export function BrowseTuitionsClient({
   fromDashboard = false,
 }: BrowseTuitionsClientProps) {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+  const rawMode = (searchParams.get("mode") || "").toLowerCase();
+  const initialMode =
+    rawMode === "online" ? "Online" : rawMode === "home" ? "Home" : "All";
+
   const [tuitions, setTuitions] = useState<TuitionPostItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState(initialQuery);
   const [subjectFilter, setSubjectFilter] = useState("All");
   const [classFilter, setClassFilter] = useState("All");
-  const [modeFilter, setModeFilter] = useState("All");
+  const [modeFilter, setModeFilter] = useState(initialMode);
 
-  const [appliedQuery, setAppliedQuery] = useState("");
+  const [appliedQuery, setAppliedQuery] = useState(initialQuery);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setSearchInput(initialQuery);
+    setAppliedQuery(initialQuery);
+    setModeFilter(initialMode);
+    setPage(1);
+  }, [initialQuery, initialMode]);
 
   useEffect(() => {
     let active = true;

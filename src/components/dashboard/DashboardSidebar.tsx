@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { DashboardUser, NavItem } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
+import { showSuccessToast } from "@/lib/toaster";
 
 function renderNavIcon(icon: NavItem["icon"]) {
   switch (icon) {
@@ -84,7 +85,7 @@ export function DashboardSidebar({
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    toast.success("Signed out successfully.");
+    showSuccessToast("Signed out successfully.");
     router.push("/login");
     router.refresh();
   };

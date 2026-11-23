@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { DashboardUser } from "@/types/dashboard";
+import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 
 export function ProfileFormCard({ user }: { user: DashboardUser }) {
   const [name, setName] = useState(user.name);
@@ -28,7 +29,7 @@ export function ProfileFormCard({ user }: { user: DashboardUser }) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error("Name is required.");
+      showErrorToast("Name is required.");
       return;
     }
 
@@ -57,9 +58,9 @@ export function ProfileFormCard({ user }: { user: DashboardUser }) {
 
       if (nextImage) setImageUrl(nextImage);
       setAvatarFile(null);
-      toast.success("Profile updated successfully.");
+      showSuccessToast("Profile updated successfully.");
     } catch (err) {
-      toast.error(
+      showErrorToast(
         err instanceof Error ? err.message : "Could not update profile."
       );
     } finally {
