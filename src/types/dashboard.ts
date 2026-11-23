@@ -52,6 +52,18 @@ export interface PaymentTransactionRecord {
 }
 
 
+export interface TuitionFeedbackItem {
+  id: string;
+  _id?: string;
+  tuitionId: string;
+  studentId?: string;
+  studentName: string;
+  studentEmail?: string;
+  rating: number; // 1 to 5
+  comment: string;
+  createdAt: string;
+}
+
 export interface TuitionPostItem {
   _id?: string;
   title: string;
@@ -107,4 +119,16 @@ export interface PaymentTransactionRecord {
   currency: string;
   transactionId: string;
   paidAt: string;
+}
+
+export interface TuitionFeedbackItem {
+  id: string;
+  _id?: string;
+  tuitionId: string;
+  studentId?: string;
+  studentName: string;
+  studentEmail?: string;
+  rating: number; // 1 to 5
+  comment: string;
+  createdAt: string;
 }

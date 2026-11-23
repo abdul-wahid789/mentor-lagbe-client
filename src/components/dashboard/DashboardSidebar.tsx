@@ -11,12 +11,12 @@ import {
   Home,
   ListChecks,
   LogOut,
+  MessageSquarePlus,
   Plus,
   Search,
   UserCog,
   Users,
 } from "lucide-react";
-import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import {
   getRoleNavItems,
@@ -59,6 +59,8 @@ function renderNavIcon(icon: NavItem["icon"]) {
       return <CreditCard className="h-4 w-4 shrink-0" />;
     case "search":
       return <Search className="h-4 w-4 shrink-0" />;
+    case "messageSquare":
+      return <MessageSquarePlus className="h-4 w-4 shrink-0" />;
     default:
       return <Home className="h-4 w-4 shrink-0" />;
   }
