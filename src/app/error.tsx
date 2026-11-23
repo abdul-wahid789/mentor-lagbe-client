@@ -21,8 +21,8 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar />
 
-      <main className="mx-auto flex w-full max-w-6xl flex-1 items-center px-6 py-16 sm:px-10 sm:py-24 lg:px-16">
-        <div className="max-w-xl space-y-6">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 items-center justify-center px-6 py-16 text-center sm:px-10 sm:py-24 lg:px-16">
+        <div className="mx-auto flex max-w-xl flex-col items-center space-y-6">
           <div className="space-y-3">
             <p className="text-4xl font-bold leading-tight tracking-tight text-primary sm:text-5xl">
               Something went wrong
@@ -37,7 +37,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
             again. Your progress hasn’t changed.
           </p>
 
-          <div className="flex flex-col items-start gap-3 pt-1 sm:flex-row sm:items-center">
+          <div className="flex flex-col items-center justify-center gap-3 pt-1 sm:flex-row">
             <Button
               size="lg"
               nativeButton={false}
@@ -64,10 +64,10 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           <p className="pt-2 text-xs text-muted-foreground sm:text-sm">
             Need a hand?{" "}
             <a
-              href="mailto:hello@mentorlagbe.com"
+              href="mailto:abdulwahid.contact@gmail.com"
               className="font-medium underline-offset-4 hover:text-foreground hover:underline"
             >
-              hello@mentorlagbe.com
+              abdulwahid.contact@gmail.com
             </a>
           </p>
         </div>
