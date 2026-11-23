@@ -56,20 +56,24 @@ const TIME_SLOT_OPTIONS = [
 
 interface TuitionDetailsClientProps {
   tuitionId: string;
+  backHref?: string;
+  backLabel?: string;
 }
 
-export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
+export function TuitionDetailsClient({
+  tuitionId,
+  backHref = "/tuitions",
+  backLabel = "Back to tuitions",
+}: TuitionDetailsClientProps) {
   const { data: session, isPending: sessionPending } = authClient.useSession();
 
   const [tuition, setTuition] = useState<TuitionPostItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  // Bookmark state (Free: max 5, Pro: unlimited)
   const [bookmarks, setBookmarks] = useState<BookmarkRecord[]>([]);
   const [bookmarkBusy, setBookmarkBusy] = useState(false);
 
-  // Apply modal state
   const [applyOpen, setApplyOpen] = useState(false);
   const [selectedDays, setSelectedDays] = useState<string[]>([
     "Sun",
@@ -292,7 +296,7 @@ export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
             </p>
             <Button
               nativeButton={false}
-              render={<Link href="/tuitions">Back to Browse Tuitions</Link>}
+              render={<Link href={backHref}>{backLabel}</Link>}
             />
           </CardContent>
         </Card>
@@ -312,9 +316,9 @@ export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
           nativeButton={false}
           className="px-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
           render={
-            <Link href="/tuitions">
+            <Link href={backHref}>
               <ArrowLeft className="mr-1.5 h-4 w-4" />
-              <span>Back to tuitions</span>
+              <span>{backLabel}</span>
             </Link>
           }
         />
@@ -611,7 +615,6 @@ export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
               )}
 
               <form onSubmit={handleApplySubmit} className="space-y-4">
-                {/* Preferred Days Selector */}
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold text-foreground">
                     Preferred days ({selectedDays.length} selected)
@@ -639,7 +642,6 @@ export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
                   </div>
                 </div>
 
-                {/* Preferred Time Slot Selector */}
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="apply-time-slot"
@@ -675,7 +677,6 @@ export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
                   )}
                 </div>
 
-                {/* Phone Number */}
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="apply-phone"
@@ -694,7 +695,6 @@ export function TuitionDetailsClient({ tuitionId }: TuitionDetailsClientProps) {
                   />
                 </div>
 
-                {/* Optional Note */}
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="apply-note"

@@ -13,6 +13,7 @@ export interface TuitionCardProps {
   tuition?: ReusableTuitionCardData;
   listing?: ReusableTuitionCardData;
   index?: number;
+  fromDashboard?: boolean;
   className?: string;
 }
 
@@ -25,21 +26,29 @@ export function TuitionCard({
   tuition,
   listing,
   index = 0,
+  fromDashboard = false,
   className,
 }: TuitionCardProps) {
   const item = data ?? tuition ?? listing;
+
   if (!item) return null;
 
   const isPost = isPostItem(item);
 
+  const id = isPost
+    ? item._id
+      ? String(item._id)
+      : `tuition-${index}`
+    : "";
+
   const href = isPost
-    ? `/tuitions/${item._id ? String(item._id) : `tuition-${index}`}`
+    ? fromDashboard
+      ? `/dashboard/student/tuitions/${id}`
+      : `/tuitions/${id}`
     : item.href;
 
-  const subject = item.subject;
   const mode: TuitionMode = item.mode === "Home" ? "Home" : "Online";
   const isOnline = mode === "Online";
-  const title = item.title;
 
   const metaLine = isPost
     ? `${item.classLevel || "All levels"} · ${Number(item.daysPerWeek || 3)} days / week`
@@ -58,7 +67,7 @@ export function TuitionCard({
   return (
     <Link
       href={href}
-      aria-label={`View details for ${title}`}
+      aria-label={`View details for ${item.title}`}
       className={cn(
         "group block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         className
@@ -72,7 +81,7 @@ export function TuitionCard({
                 variant="secondary"
                 className="rounded-md bg-secondary px-2.5 py-0.5 text-xs font-semibold text-primary"
               >
-                {subject}
+                {item.subject}
               </Badge>
               <Badge
                 variant="outline"
@@ -88,7 +97,7 @@ export function TuitionCard({
             </div>
 
             <h2 className="text-lg font-bold leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
-              {title}
+              {item.title}
             </h2>
 
             <div className="space-y-1 text-xs text-muted-foreground">

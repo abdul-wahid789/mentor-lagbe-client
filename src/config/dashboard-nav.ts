@@ -17,10 +17,10 @@ export function getRoleNavItems(role: UserRole): NavItem[] {
       { label: "Overview", href: "/dashboard/student", icon: "home" },
       {
         label: "My applications",
-        href: "/dashboard/student/my-applications",
+        href: "/dashboard/student/applications",
         icon: "list",
       },
-      { label: "Browse tuitions", href: "/tuitions", icon: "search" },
+      { label: "Browse tuitions", href: "/dashboard/student/tuitions", icon: "search" },
     ];
   }
 
