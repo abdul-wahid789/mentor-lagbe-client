@@ -16,14 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { TuitionApprovalStatus, TuitionPostItem } from "@/types/dashboard";
+import type { ApprovalStatus, TuitionPostItem } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
 
 interface AdminTuitionApprovalsClientProps {
   initialTuitions: TuitionPostItem[];
 }
 
-function getApprovalBadgeStyle(status: TuitionApprovalStatus): string {
+function getApprovalBadgeStyle(status: ApprovalStatus): string {
   if (status === "approved") {
     return "border-success/35 bg-success-tint text-success";
   }
@@ -33,7 +33,7 @@ function getApprovalBadgeStyle(status: TuitionApprovalStatus): string {
   return "border-warning/40 bg-warning-tint text-warning";
 }
 
-function formatApprovalLabel(status: TuitionApprovalStatus): string {
+function formatApprovalLabel(status: ApprovalStatus): string {
   if (status === "approved") return "Approved";
   if (status === "rejected") return "Rejected";
   return "Pending";
@@ -124,7 +124,9 @@ export function AdminTuitionApprovalsClient({
     const trimmedNote = rejectionNote.trim();
 
     if (nextStatus === "rejected" && !trimmedNote) {
-      setNoteError("Please write a rejection note explaining what the tutor should update.");
+      setNoteError(
+        "Please write a rejection note explaining what the tutor should update."
+      );
       showErrorToast("Rejection note is required before rejecting.");
       noteTextareaRef.current?.focus();
       noteTextareaRef.current?.scrollIntoView({
@@ -266,15 +268,11 @@ export function AdminTuitionApprovalsClient({
                 const rawId = item._id ? String(item._id) : "";
                 const key = rawId || `tuition-approval-${idx}`;
                 const isBusy = updatingId === rawId;
-                const status: TuitionApprovalStatus =
+                const status: ApprovalStatus =
                   item.approvalStatus || "pending";
                 const modeLabel = item.mode === "Home" ? "Offline" : "Online";
-                const submittedDate = formatSubmittedDate(
-                  (item as TuitionPostItem & { createdAt?: unknown }).createdAt
-                );
-                const existingNote = (
-                  item as TuitionPostItem & { rejectionNote?: string }
-                ).rejectionNote;
+                const submittedDate = formatSubmittedDate(item.createdAt);
+                const existingNote = item.rejectionNote;
 
                 return (
                   <div

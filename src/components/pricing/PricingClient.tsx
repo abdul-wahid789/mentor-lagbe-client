@@ -145,9 +145,10 @@ export function PricingClient() {
       <section className="space-y-4">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {PRICING_PLANS.map((plan) => {
+            const planId = plan.id;
             const isPaidPlan =
-              plan.id === "pro-student" || plan.id === "pro-tutor";
-            const isBusy = loadingPlan === plan.id;
+              planId === "pro-student" || planId === "pro-tutor";
+            const isBusy = loadingPlan === planId;
 
             return (
               <Card
@@ -194,7 +195,7 @@ export function PricingClient() {
                   </div>
 
                   <div className="pt-2 flex items-center justify-center">
-                    {plan.id === "free" ? (
+                    {planId === "free" ? (
                       <Button
                         type="button"
                         variant="outline"
@@ -206,7 +207,7 @@ export function PricingClient() {
                       <Button
                         type="button"
                         disabled={!isPaidPlan || isBusy}
-                        onClick={() => handleSubscribe(plan.id)}
+                        onClick={() => handleSubscribe(planId)}
                         className="h-10 rounded-lg px-4 text-xs font-semibold"
                       >
                         {isBusy ? "Redirecting..." : plan.ctaLabel}

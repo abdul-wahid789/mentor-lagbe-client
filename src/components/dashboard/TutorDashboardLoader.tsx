@@ -32,8 +32,7 @@ export function TutorDashboardLoader({ user }: TutorDashboardLoaderProps) {
 
       const [tuitionsRes, applicantsRes] = await Promise.all([
         getMyTuitions(),
-        // getTutorApplicants(),
-        [],
+        getTutorApplicants(),
       ]);
 
       if (!active) return;

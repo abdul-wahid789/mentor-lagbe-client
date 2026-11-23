@@ -18,7 +18,7 @@ export interface DashboardUser {
 export interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "plus" | "list" | "users" | "checkSquare" | "creditCard" | "search" | "user" | "logout";
+  icon: "home" | "plus" | "list" | "users" | "checkSquare" | "creditCard" | "search" | "user" | "logout" | "messageSquare";
   external?: boolean;
 }
 
@@ -79,6 +79,7 @@ export interface TuitionPostItem {
   tutorName?: string;
   tutorEmail?: string;
   approvalStatus?: ApprovalStatus;
+  rejectionNote?: string;
   isActive?: boolean;
   applicantsCount?: number;
   createdAt?: string;
@@ -107,28 +108,4 @@ export interface AdminUserRecord {
   role: UserRole;
   plan: SubscriptionPlan;
   joinedAt: string;
-}
-
-export interface PaymentTransactionRecord {
-  id: string;
-  userName: string;
-  userEmail: string;
-  role: UserRole;
-  planName: "Pro Student" | "Pro Tutor";
-  amount: number;
-  currency: string;
-  transactionId: string;
-  paidAt: string;
-}
-
-export interface TuitionFeedbackItem {
-  id: string;
-  _id?: string;
-  tuitionId: string;
-  studentId?: string;
-  studentName: string;
-  studentEmail?: string;
-  rating: number; // 1 to 5
-  comment: string;
-  createdAt: string;
 }
