@@ -10,12 +10,12 @@ async function resolveToken(explicitToken?: string): Promise<string> {
   return await getClientToken();
 }
 
-export async function postPromise<T>(
+export async function postPromise<T = unknown, R = null>(
   url: string,
   method: Method,
   data?: T,
   token?: string
-): Promise<Response<null>> {
+): Promise<Response<R>> {
   const authToken = await resolveToken(token);
   try {
     const response = await fetch(`${base_url}${url}`, {
@@ -29,7 +29,7 @@ export async function postPromise<T>(
     });
 
     try {
-      const result: Response<null> = await response.json();
+      const result: Response<R> = await response.json();
       return result;
     } catch {
       return { error: true, msg: "JSON Error" };
@@ -54,7 +54,7 @@ export async function getPromise<T>(
         ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       },
     });
-    console.log(response)
+    console.log(response);
     try {
       const result: Response<T> = await response.json();
       return result;

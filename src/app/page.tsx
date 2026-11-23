@@ -1,37 +1,47 @@
+import { Suspense } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/home/HeroSection";
-import { StatsStrip } from "@/components/home/StatsStrip";
-import { FeaturedTuitionsSection } from "@/components/home/FeaturedTuitionsSection";
-import { SubjectsSection } from "@/components/home/SubjectsSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { PricingSection } from "@/components/home/PricingSection";
-import { TestimonialSection } from "@/components/home/TestimonialSection";
-import { getHomeStats, getRecentFeedbacks } from "@/lib/actions/home";
-import { getApprovedTuitions } from "@/lib/actions/tuition";
+import {
+  FeaturedTuitionsStream,
+  StatsStripStream,
+  SubjectsSectionStream,
+  TestimonialSectionStream,
+} from "@/components/home/HomeDataSections";
+import {
+  FeaturedTuitionsSkeleton,
+  StatsStripSkeleton,
+  SubjectsSectionSkeleton,
+  TestimonialSectionSkeleton,
+} from "@/components/home/HomeSkeletons";
 
-export default async function HomePage() {
-  const [stats, tuitionsRes, recentFeedbacks] = await Promise.all([
-    getHomeStats(),
-    getApprovedTuitions(),
-    getRecentFeedbacks(3),
-  ]);
-
-  const approvedTuitions =
-    !tuitionsRes.error && Array.isArray(tuitionsRes.data)
-      ? tuitionsRes.data
-      : [];
+export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar />
       <main className="flex-1">
         <HeroSection />
-        <StatsStrip stats={stats} />
-        <FeaturedTuitionsSection tuitions={approvedTuitions} />
-        <SubjectsSection tuitions={approvedTuitions} />
+
+        <Suspense fallback={<StatsStripSkeleton />}>
+          <StatsStripStream />
+        </Suspense>
+
+        <Suspense fallback={<FeaturedTuitionsSkeleton />}>
+          <FeaturedTuitionsStream />
+        </Suspense>
+
+        <Suspense fallback={<SubjectsSectionSkeleton />}>
+          <SubjectsSectionStream />
+        </Suspense>
+
         <HowItWorksSection />
         <PricingSection />
-        <TestimonialSection feedbackPayload={recentFeedbacks} />
+
+        <Suspense fallback={<TestimonialSectionSkeleton />}>
+          <TestimonialSectionStream />
+        </Suspense>
       </main>
       <Footer />
     </div>

@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { toast } from "sonner";
+import { Suspense, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { DashboardUser } from "@/types/dashboard";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardTopbar } from "./DashboardTopbar";
-import { showErrorToast } from "@/lib/toaster";
-import { planUpgrade } from "@/lib/actions/payment";
-import { useRouter } from "next/navigation";
+import { DashboardSessionSkeleton } from "./DashboardSessionSkeleton";
 
 interface DashboardShellProps {
   user: DashboardUser;
@@ -22,31 +20,15 @@ export function DashboardShell({
   children,
 }: DashboardShellProps) {
   const [isUpgrading, setIsUpgrading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+
   const handleUpgradePlan = async (plan: "pro-student" | "pro-tutor") => {
     setIsUpgrading(true);
-    router.push(`/payment/checkout?plan=${plan}`)
-    setIsUpgrading(false);
-
-    // try {
-    //   const response = await fetch("/api/stripe/checkout", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ plan }),
-    //   });
-
-    //   const data = await response.json();
-    //   if (!response.ok || !data?.url) {
-    //     throw new Error(data?.error || "Could not start Stripe Checkout.");
-    //   }
-
-    //   window.location.href = data.url;
-    // } catch (err) {
-    //   showErrorToast(
-    //     err instanceof Error ? err.message : "Failed to start Stripe payment."
-    //   );
-    //   setIsUpgrading(false);
-    // }
+    try {
+      router.push(`/payment/checkout?plan=${plan}`);
+    } finally {
+      setIsUpgrading(false);
+    }
   };
 
   return (
@@ -60,7 +42,9 @@ export function DashboardShell({
         <SidebarInset className="flex min-w-0 flex-1 flex-col bg-background">
           <DashboardTopbar user={user} breadcrumbLabel={breadcrumbLabel} />
           <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
-            {children}
+            <Suspense fallback={<DashboardSessionSkeleton />}>
+              {children}
+            </Suspense>
           </main>
         </SidebarInset>
       </div>
