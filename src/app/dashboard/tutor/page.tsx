@@ -1,24 +1,31 @@
 import { requireDashboardUser } from "@/lib/dashboard-session";
+import { getServerToken } from "@/lib/server-token";
+import { getMyTuitions } from "@/lib/actions/tuition";
+import { getTutorApplicants } from "@/lib/actions/application";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { TutorOverview } from "@/components/dashboard/TutorOverview";
 import type { StudentApplicationItem, TuitionPostItem } from "@/types/dashboard";
-import { getMyTuitions } from "@/lib/actions/tuition";
-import { getServerToken } from "@/lib/server-token";
-
-// Replace with live data fetched from your Express / MongoDB Atlas API
-// const { data, error, msg } = await getMyTuitions()
-// console.log(data, error, msg, "tution")
-// const INITIAL_TUITIONS: TuitionPostItem[] = error ? [] : data ? data : [];
-// const INITIAL_APPLICANTS: StudentApplicationItem[] = [];
 
 export default async function TutorDashboardPage() {
   const user = await requireDashboardUser(["tutor"]);
+  const token = await getServerToken();
 
-  const token = await getServerToken()
-  const { data, error, msg } = await getMyTuitions(token)
-  console.log(data, error, msg, "tution")
-  const INITIAL_TUITIONS: TuitionPostItem[] = error ? [] : data ? data : [];
-  const INITIAL_APPLICANTS: StudentApplicationItem[] = [];
+  const [tuitionsRes, applicantsRes] = await Promise.all([
+    getMyTuitions(token),
+    getTutorApplicants(token),
+  ]);
+  console.log(applicantsRes)
+  const INITIAL_TUITIONS: TuitionPostItem[] = tuitionsRes.error
+    ? []
+    : Array.isArray(tuitionsRes.data)
+    ? tuitionsRes.data
+    : [];
+
+  const INITIAL_APPLICANTS: StudentApplicationItem[] = applicantsRes.error
+    ? []
+    : Array.isArray(applicantsRes.data)
+    ? applicantsRes.data
+    : [];
 
   return (
     <DashboardShell user={user} breadcrumbLabel="Overview">

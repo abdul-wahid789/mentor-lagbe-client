@@ -30,7 +30,7 @@ import { ThemeToggleButton } from "@/components/theme/ThemeToggleButton";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Browse Tuitions", href: "/tuitions" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Pricing", href: "/pricing" },
 ];
 
 export function Navbar() {

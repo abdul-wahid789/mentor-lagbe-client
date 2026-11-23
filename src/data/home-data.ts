@@ -153,7 +153,7 @@ export const PRICING_TIERS: PricingTier[] = [
       "Early access to newly approved mentorship batches",
     ],
     ctaLabel: "Subscribe with Stripe",
-    href: "/billing/checkout?plan=pro-student",
+    href: "/payment/checkout?plan=pro-student",
     featured: true,
   },
   {
@@ -171,7 +171,7 @@ export const PRICING_TIERS: PricingTier[] = [
       "Custom banner uploads & batch seat management",
     ],
     ctaLabel: "Subscribe with Stripe",
-    href: "/billing/checkout?plan=pro-tutor",
+    href: "/payment/checkout?plan=pro-tutor",
   },
 ];
 

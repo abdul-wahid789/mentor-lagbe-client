@@ -8,18 +8,32 @@ export interface UpgradePlanPayload {
   plan: UpgradePlanKey;
 }
 
+export interface PaidStatusData {
+  isPro: boolean;
+  plan: "free" | "pro";
+  latestPayment: PaymentTransactionRecord | null;
+  payments: PaymentTransactionRecord[];
+}
+
 export async function planUpgrade(
-  data: UpgradePlanPayload
+  data: UpgradePlanPayload,
+  token?: string
 ): Promise<Response<null>> {
-  return await postPromise<UpgradePlanPayload>("/checkout", "POST", data);
+  return await postPromise<UpgradePlanPayload>("/checkout", "POST", data, token);
 }
 
-export async function getTransactions(): Promise<
-  Response<PaymentTransactionRecord[]>
-> {
-  return await getPromise<PaymentTransactionRecord[]>("/transactions", "GET");
+export async function getTransactions(
+  token?: string
+): Promise<Response<PaymentTransactionRecord[]>> {
+  return await getPromise<PaymentTransactionRecord[]>(
+    "/transactions",
+    "GET",
+    token
+  );
 }
 
-export async function getPaidStatus(token: string = ""): Promise<Response<boolean>> {
-  return await getPromise<boolean>('/user/paid', token)
+export async function getPaidStatus(
+  token?: string
+): Promise<Response<PaidStatusData>> {
+  return await getPromise<PaidStatusData>("/user/paid", "GET", token);
 }
