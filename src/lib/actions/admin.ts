@@ -72,3 +72,21 @@ export async function updateUserRole(
     token
   );
 }
+
+export interface UpdateTuitionApprovalPayload {
+  approvalStatus: "approved" | "rejected";
+  rejectionNote?: string;
+}
+
+export async function updateTuitionApproval(
+  tuitionId: string,
+  data: UpdateTuitionApprovalPayload,
+  token?: string
+): Promise<Response<null>> {
+  return await postPromise<UpdateTuitionApprovalPayload>(
+    `/admin/tuitions/${tuitionId}/approval`,
+    "PATCH",
+    data,
+    token
+  );
+}
