@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mentor Lagbe
+
+## Short Description
+
+Mentor Lagbe is a full-stack tuition and mentorship marketplace web application built to connect students, tutors, and administrators in one streamlined platform. Designed with a decoupled architecture, it pairs a responsive Next.js (App Router) frontend with a serverless Express.js and MongoDB backend. The platform enables tutors to publish and manage tuition listings, students to discover approved tuitions, apply, and leave feedback, and admins to moderate listings, manage users, and track Stripe subscription transactions. It features JWT-backed authentication, role-based dashboards, validated forms, and accessible UI components for a modern, seamless user experience.
+
+- **Live Demo:** [mentor-lagbe-client-ashen.vercel.app](https://mentor-lagbe-client-ashen.vercel.app/)
+- **Backend API:** [mentor-lagbe-server-ruddy.vercel.app](https://mentor-lagbe-server-ruddy.vercel.app/)
+
+---
+
+## Key Features
+
+- **Secure Authentication & Social Login**
+  Implemented a secure authentication flow using **Better Auth** with the MongoDB adapter and **JWT** plugins (`jwt` / `jwtClient`). Supports traditional Email/Password credentials alongside seamless **Google Social Login**, complete with role selection (`student` / `tutor`) and profile photo uploads.
+
+- **Role-Based Dashboards (Student, Tutor & Admin)**
+  Dedicated workspaces tailored to each user role:
+  - **Students** can browse approved tuitions, bookmark listings, submit applications with preferred schedules, track application statuses, and submit tuition ratings and feedback.
+  - **Tutors** can post new tuition listings, manage active posts, and review, accept, or reject incoming student applicants.
+  - **Admins** can oversee all platform users, approve or reject pending tuition submissions with rejection notes, and monitor payment transactions.
+
+- **Smart Route Protection (Next.js Proxy)**
+  Utilizes a custom Next.js request proxy (`src/proxy.ts`) to guard protected routes (`/dashboard/:path*` and `/payment/:path*`). It verifies Better Auth session cookies before rendering and smoothly redirects unauthenticated users to `/login` with a preserved `callbackUrl`.
+
+- **Stripe Subscription & Checkout Integration**
+  Integrated **Stripe** checkout for upgrading from Free to **Pro Student** or **Pro Tutor** memberships (unlocking unlimited tuition posts for tutors and Pro benefits), complete with dedicated checkout, success, and cancel flows as well as transaction history tracking.
+
+- **Image Uploads via ImgBB**
+  Supports validated profile avatar and tuition banner uploads (JPG, PNG, WebP, GIF up to 5 MB) processed and hosted via the **ImgBB API**, keeping the database lightweight while serving fast external images.
+
+- **Polished UI/UX with Shadcn & Tailwind CSS**
+  Crafted with **Tailwind CSS v4**, **Shadcn UI** (`@base-ui/react` primitives), **Lucide React**, and **next-themes** for dark/light mode support, responsive sidebars, interactive dialogs/selects, **Sonner** toast notifications, and skeleton loading states.
+
+- **Validated Form Handling**
+  Forms across authentication, tuition creation, applications, and profile updates use **React Hook Form** with **Zod** (`@hookform/resolvers`) for strict client-side validation, clear field error states, and reliable API payloads.
+
+---
+
+## Technologies Used
+
+### Frontend
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Library:** React 19
+- **Styling:** Tailwind CSS v4
+- **UI Components:** Shadcn UI (`@base-ui/react`), Lucide React, React Icons
+- **Form Management & Validation:** React Hook Form, Zod, `@hookform/resolvers`
+- **Notifications & Theming:** Sonner, `next-themes`
+- **Payments:** Stripe (`@stripe/stripe-js`, `stripe`)
+
+### Backend & Database
+- **Framework:** Express.js (Serverless deployment on Vercel)
+- **Database:** MongoDB (Atlas)
+- **Image Hosting:** ImgBB API
+
+### Authentication & Security
+- **Auth Provider:** Better Auth (Email/Password credentials, Google OAuth, `@better-auth/mongo-adapter`)
+- **Token Management:** Better Auth JWT plugin (`jwt` & `jwtClient`)
+- **Security:** Next.js Route Proxy (`src/proxy.ts`), role-based session guards, CORS protection
+
+---
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository and install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Configure environment variables:**
+   Create a `.env` file in the project root with your MongoDB, Better Auth, Google OAuth, ImgBB, Stripe, and backend API keys.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Open in browser:**
+   Visit [http://localhost:3000](http://localhost:3000).
