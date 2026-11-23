@@ -11,6 +11,7 @@ export interface TuitionListing {
   verified: boolean;
   monthlyRate: string;
   href: string;
+  bannerUrl?: string;
 }
 
 export interface SubjectCategory {

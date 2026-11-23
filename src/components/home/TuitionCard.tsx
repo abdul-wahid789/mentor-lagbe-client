@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { TuitionListing } from "@/types/home";
@@ -29,6 +33,8 @@ export function TuitionCard({
   fromDashboard = false,
   className,
 }: TuitionCardProps) {
+  const [imgError, setImgError] = useState(false);
+
   const item = data ?? tuition ?? listing;
 
   if (!item) return null;
@@ -49,6 +55,9 @@ export function TuitionCard({
 
   const mode: TuitionMode = item.mode === "Home" ? "Home" : "Online";
   const isOnline = mode === "Online";
+
+  const bannerUrl = item.bannerUrl?.trim() || "";
+  const showBanner = Boolean(bannerUrl) && !imgError;
 
   const metaLine = isPost
     ? `${item.classLevel || "All levels"} · ${Number(item.daysPerWeek || 3)} days / week`
@@ -73,8 +82,69 @@ export function TuitionCard({
         className
       )}
     >
-      <Card className="flex h-full flex-col justify-between border-border bg-card shadow-xs transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:border-primary/45 group-hover:shadow-md">
-        <CardContent className="flex h-full flex-col justify-between space-y-5 p-5">
+      <Card className="flex h-full flex-col justify-between gap-0 overflow-hidden border-border bg-card p-0 shadow-xs transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:border-primary/45 group-hover:shadow-md">
+        {/* Banner Image or Fallback Cover */}
+        <div className="relative h-40 w-full shrink-0 overflow-hidden border-b border-border/60 bg-muted/40">
+          {showBanner ? (
+            <>
+              <Image
+                src={bannerUrl}
+                alt={item.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onError={() => setImgError(true)}
+                className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
+            </>
+          ) : (
+            <div className="relative flex h-full w-full flex-col justify-between bg-gradient-to-br from-primary/15 via-secondary/70 to-primary/5 p-4 transition-colors duration-300">
+              {/* Subtle decorative pattern */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-30"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)",
+                  backgroundSize: "16px 16px",
+                }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-8 -right-8 h-28 w-28 rounded-full bg-primary/15 blur-xl transition-transform duration-300 group-hover:scale-125"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-8 -left-6 h-24 w-24 rounded-full bg-primary/10 blur-lg"
+              />
+
+              <div className="relative flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-background/80 px-2.5 py-1 text-[11px] font-semibold text-primary shadow-2xs backdrop-blur-xs">
+                  {item.subject}
+                </span>
+                <span className="text-[11px] font-medium text-muted-foreground">
+                  {mode}
+                </span>
+              </div>
+
+              <div className="relative flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-background/85 text-primary shadow-xs backdrop-blur-xs transition-transform duration-300 group-hover:scale-105">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold text-foreground/90">
+                    {isPost ? item.classLevel || "All Levels" : item.level}
+                  </p>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    1-on-1 &amp; Batch Mentorship
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <CardContent className="flex flex-1 flex-col justify-between space-y-5 p-5">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Badge
