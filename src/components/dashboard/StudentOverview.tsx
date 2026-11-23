@@ -56,7 +56,7 @@ export function StudentOverview({
             label: "Total applied",
             value: totalApplied,
             subtext: "Your learning journey",
-            href: "/dashboard/student/my-applications",
+            href: "/dashboard/student/applications",
           }}
         />
         <StatCard
@@ -100,7 +100,7 @@ export function StudentOverview({
             className="h-9 px-4 text-xs font-semibold"
             nativeButton={false}
             render={
-              <Link href="/dashboard/student/my-applications">
+              <Link href="/dashboard/student/applications">
                 <span>View my applications</span>
                 <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
               </Link>
@@ -258,7 +258,7 @@ export function StudentOverview({
 
           <div className="pt-1">
             <Link
-              href="/dashboard/student/my-applications"
+              href="/dashboard/student/applications"
               className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline underline-offset-4"
             >
               <span>View all {totalApplied} applications</span>

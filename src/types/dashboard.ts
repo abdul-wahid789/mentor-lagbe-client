@@ -29,6 +29,29 @@ export interface StatMetric {
   href?: string;
 }
 
+export type PaymentRole = "student" | "tutor" | "admin";
+export type PaymentPlanSlug = "pro-student" | "pro-tutor";
+export type PaymentPlanName = "Pro Student" | "Pro Tutor";
+export type PaymentStatus = "paid" | "pending" | "failed" | "refunded";
+
+export interface PaymentTransactionRecord {
+  id: string;
+  _id?: string;
+  userId?: string;
+  userName: string;
+  userEmail: string;
+  role: PaymentRole | string;
+  plan?: PaymentPlanSlug | string;
+  planName: PaymentPlanName | string;
+  amount: number;
+  currency: string;
+  transactionId: string;
+  status?: PaymentStatus | string;
+  paidAt: string;
+  createdAt?: string;
+}
+
+
 export interface TuitionPostItem {
   _id?: string;
   title: string;
