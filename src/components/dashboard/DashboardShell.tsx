@@ -6,6 +6,9 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { DashboardUser } from "@/types/dashboard";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardTopbar } from "./DashboardTopbar";
+import { showErrorToast } from "@/lib/toaster";
+import { planUpgrade } from "@/lib/actions/payment";
+import { useRouter } from "next/navigation";
 
 interface DashboardShellProps {
   user: DashboardUser;
@@ -19,28 +22,31 @@ export function DashboardShell({
   children,
 }: DashboardShellProps) {
   const [isUpgrading, setIsUpgrading] = useState(false);
-
+  const router = useRouter()
   const handleUpgradePlan = async (plan: "pro-student" | "pro-tutor") => {
     setIsUpgrading(true);
-    try {
-      const response = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
+    router.push(`/payment/checkout?plan=${plan}`)
+    setIsUpgrading(false);
 
-      const data = await response.json();
-      if (!response.ok || !data?.url) {
-        throw new Error(data?.error || "Could not start Stripe Checkout.");
-      }
+    // try {
+    //   const response = await fetch("/api/stripe/checkout", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ plan }),
+    //   });
 
-      window.location.href = data.url;
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to start Stripe payment."
-      );
-      setIsUpgrading(false);
-    }
+    //   const data = await response.json();
+    //   if (!response.ok || !data?.url) {
+    //     throw new Error(data?.error || "Could not start Stripe Checkout.");
+    //   }
+
+    //   window.location.href = data.url;
+    // } catch (err) {
+    //   showErrorToast(
+    //     err instanceof Error ? err.message : "Failed to start Stripe payment."
+    //   );
+    //   setIsUpgrading(false);
+    // }
   };
 
   return (

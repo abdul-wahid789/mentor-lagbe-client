@@ -89,6 +89,7 @@ export default async function PaymentSuccessPage({
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <Button
                 size="sm"
+                nativeButton={false}
                 className="h-9 px-4 text-xs font-semibold sm:text-sm"
                 render={
                   <Link href="/dashboard">
@@ -100,6 +101,7 @@ export default async function PaymentSuccessPage({
               <Button
                 variant="outline"
                 size="sm"
+                nativeButton={false}
                 className="h-9 border-primary/25 px-4 text-xs font-semibold text-primary sm:text-sm"
                 render={
                   <Link href="/dashboard/admin/transactions">

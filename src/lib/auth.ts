@@ -11,13 +11,17 @@ export const auth = betterAuth({
     client,
   }),
   user: {
-       additionalFields: {
-          role: {
-              type: ["student", "tutor", "admin"],
-              input: true
-            }
-        }
-    },
+    additionalFields: {
+      role: {
+        type: ["student", "tutor", "admin"],
+        input: true
+      },
+      plan: {
+        type: ["pro", "free"],
+        input: true
+      }
+    }
+  },
   emailAndPassword: {
     enabled: true,
   },
@@ -28,7 +32,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-        jwt(),
-    ]
+    jwt(),
+  ]
 });
 

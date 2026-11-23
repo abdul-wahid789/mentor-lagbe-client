@@ -21,6 +21,8 @@ export function TutorOverview({
   tuitions,
   applicants,
 }: TutorOverviewProps) {
+
+  
   const totalPosted = tuitions.length;
   const activeApproved = tuitions.filter(
     (t) => t.approvalStatus === "approved" && t.isActive
@@ -101,6 +103,7 @@ export function TutorOverview({
           <Button
             size="sm"
             className="h-9 shrink-0 px-4 text-xs font-semibold"
+            nativeButton={false}
             render={
               <Link href="/dashboard/tutor/post-tuition">
                 <Plus className="mr-1.5 h-3.5 w-3.5" />
@@ -146,6 +149,7 @@ export function TutorOverview({
             variant="secondary"
             size="sm"
             className="h-8 bg-secondary px-3.5 text-xs font-semibold text-primary hover:bg-secondary/80"
+            nativeButton={false}
             render={
               <Link href="/dashboard/tutor/applicants">
                 <span>Review applicants</span>

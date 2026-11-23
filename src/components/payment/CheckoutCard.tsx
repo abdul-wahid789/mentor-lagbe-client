@@ -155,6 +155,7 @@ export function CheckoutCard({ plan }: { plan: CheckoutPlanKey }) {
           type="button"
           variant="outline"
           disabled={loading}
+          nativeButton={false}
           className="h-10 border-primary/25 px-4 text-xs font-semibold text-primary sm:text-sm"
           render={
             <Link href="/#pricing">

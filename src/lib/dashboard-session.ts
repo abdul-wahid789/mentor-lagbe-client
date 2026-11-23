@@ -18,6 +18,9 @@ export async function getOptionalDashboardUser(): Promise<DashboardUser | null> 
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
+      query: {
+        disableCookieCache: true,
+      },
     });
 
     if (!session?.user) {
@@ -25,6 +28,7 @@ export async function getOptionalDashboardUser(): Promise<DashboardUser | null> 
     }
 
     const rawUser = session.user as Record<string, unknown>;
+    console.log(session.user)
 
     return {
       id: String(rawUser.id),
@@ -53,6 +57,5 @@ export async function requireDashboardUser(
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     redirect(`/dashboard/${user.role}`);
   }
-
   return user;
 }

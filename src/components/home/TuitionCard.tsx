@@ -1,76 +1,117 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import type { TuitionListing } from "@/types/home";
+import type { TuitionMode, TuitionPostItem } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
 
-interface TuitionCardProps {
-    listing: TuitionListing;
+export type ReusableTuitionCardData = TuitionPostItem | TuitionListing;
+
+export interface TuitionCardProps {
+  data?: ReusableTuitionCardData;
+  tuition?: ReusableTuitionCardData;
+  listing?: ReusableTuitionCardData;
+  index?: number;
+  className?: string;
 }
 
-export function TuitionCard({ listing }: TuitionCardProps) {
-    const isOnline = listing.mode === "Online";
+function isPostItem(item: ReusableTuitionCardData): item is TuitionPostItem {
+  return "classLevel" in item || "monthlyFee" in item;
+}
 
-    return (
-        <Card className="flex flex-col justify-between border-border bg-card transition-colors hover:border-primary/40">
-            <div>
-                <CardHeader className="pb-2.5">
-                    <div className="flex items-center gap-2">
-                        <Badge
-                            variant="secondary"
-                            className="rounded-md px-2 py-0.5 text-[11px] font-medium bg-secondary text-secondary-foreground"
-                        >
-                            {listing.subject}
-                        </Badge>
-                        <Badge
-                            variant="outline"
-                            className={cn(
-                                "rounded-md px-2 py-0.5 text-[11px] font-medium border",
-                                isOnline
-                                    ? "bg-accent-tint text-accent border-accent/25"
-                                    : "bg-success-tint text-success border-success/25"
-                            )}
-                        >
-                            {listing.mode}
-                        </Badge>
-                    </div>
+export function TuitionCard({
+  data,
+  tuition,
+  listing,
+  index = 0,
+  className,
+}: TuitionCardProps) {
+  const item = data ?? tuition ?? listing;
+  if (!item) return null;
 
-                    <h3 className="pt-2 text-base font-semibold leading-snug text-foreground">
-                        {listing.title}
-                    </h3>
-                </CardHeader>
+  const isPost = isPostItem(item);
 
-                <CardContent className="space-y-1.5 pb-4 text-xs text-muted-foreground">
-                    <p className="font-mono text-[11px] text-muted-foreground">
-                        {listing.level} · {listing.schedule}
-                    </p>
-                    <p className="text-foreground/85">
-                        {listing.tutorName}
-                        {listing.verified && (
-                            <span className="text-muted-foreground"> · Verified tutor</span>
-                        )}
-                    </p>
-                </CardContent>
+  const href = isPost
+    ? `/tuitions/${item._id ? String(item._id) : `tuition-${index}`}`
+    : item.href;
+
+  const subject = item.subject;
+  const mode: TuitionMode = item.mode === "Home" ? "Home" : "Online";
+  const isOnline = mode === "Online";
+  const title = item.title;
+
+  const metaLine = isPost
+    ? `${item.classLevel || "All levels"} · ${Number(item.daysPerWeek || 3)} days / week`
+    : `${item.level} · ${item.schedule}`;
+
+  const tutorLine = isPost
+    ? `${item.tutorName || "Verified Tutor"} · Verified tutor`
+    : item.verified
+    ? `${item.tutorName} · Verified tutor`
+    : item.tutorName;
+
+  const feeText = isPost
+    ? `৳${Number(item.monthlyFee || 0).toLocaleString()}`
+    : item.monthlyRate;
+
+  return (
+    <Link
+      href={href}
+      aria-label={`View details for ${title}`}
+      className={cn(
+        "group block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        className
+      )}
+    >
+      <Card className="flex h-full flex-col justify-between border-border bg-card shadow-xs transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:border-primary/45 group-hover:shadow-md">
+        <CardContent className="flex h-full flex-col justify-between space-y-5 p-5">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="secondary"
+                className="rounded-md bg-secondary px-2.5 py-0.5 text-xs font-semibold text-primary"
+              >
+                {subject}
+              </Badge>
+              <Badge
+                variant="outline"
+                className={cn(
+                  "rounded-md px-2.5 py-0.5 text-xs font-medium",
+                  isOnline
+                    ? "border-success/30 bg-success-tint text-success"
+                    : "border-border bg-muted/60 text-muted-foreground"
+                )}
+              >
+                {mode}
+              </Badge>
             </div>
 
-            <CardFooter className="flex items-center justify-between border-t border-border/60 pt-3.5">
-                <div className="text-sm font-semibold text-foreground tabular-nums">
-                    <span className="font-mono">{listing.monthlyRate}</span>
-                    <span className="ml-1 text-xs font-normal text-muted-foreground">
-                        / month
-                    </span>
-                </div>
-                <Link href={listing.href}>
-                    <Button
-                        variant="secondary"
-                        size="sm"
-                        className="h-7 px-3 text-xs font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            <h2 className="text-lg font-bold leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
+              {title}
+            </h2>
 
-                    >View details
-                    </Button></Link>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <p>{metaLine}</p>
+              <p>{tutorLine}</p>
+            </div>
+          </div>
 
-            </CardFooter>
-        </Card>
-    );
+          <div className="flex items-center justify-between gap-3 pt-2">
+            <p className="font-mono text-base font-bold text-foreground tabular-nums">
+              {feeText}{" "}
+              <span className="font-sans text-xs font-normal text-muted-foreground">
+                / month
+              </span>
+            </p>
+
+            <span className="inline-flex h-8 items-center gap-1 rounded-lg bg-secondary px-3 text-xs font-semibold text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+              <span>View details</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
 }

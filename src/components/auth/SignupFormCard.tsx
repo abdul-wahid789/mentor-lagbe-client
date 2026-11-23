@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { AvatarUploadField } from "./AvatarUploadField";
 import { RoleSelector } from "./RoleSelector";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 
 const PASSWORD_RULES = [
   {
@@ -122,11 +123,11 @@ export function SignupFormCard() {
         const message =
           error.message || "Could not create your account. Please try again.";
         setFormError(message);
-        toast.error(message);
+        showErrorToast(message);
         return;
       }
 
-      toast.success("Account created successfully! Please sign in.");
+      showSuccessToast("Account created successfully! Please sign in.");
       router.push("/login");
     } catch (err) {
       const message =
@@ -134,7 +135,7 @@ export function SignupFormCard() {
           ? err.message
           : "Something went wrong during sign up.";
       setFormError(message);
-      toast.error(message);
+      showErrorToast(message);
     } finally {
       setStatusText(null);
     }
@@ -142,7 +143,7 @@ export function SignupFormCard() {
 
   const onInvalid = () => {
     setFormError("Please fix the highlighted fields before continuing.");
-    toast.error("Please check your form details.");
+    showErrorToast("Please check your form details.");
   };
 
   return (

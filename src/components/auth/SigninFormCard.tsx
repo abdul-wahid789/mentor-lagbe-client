@@ -12,7 +12,6 @@ import {
   EyeOff,
   Loader2,
 } from "lucide-react";
-import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import {
   signinSchema,
@@ -36,6 +35,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { FcGoogle } from "react-icons/fc";
+import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 
 export function SigninFormCard() {
   const router = useRouter();
@@ -79,24 +79,24 @@ export function SigninFormCard() {
         const message =
           error.message || "Invalid email or password. Please try again.";
         setFormError(message);
-        toast.error(message);
+        showErrorToast(message);
         return;
       }
 
-      toast.success("Welcome back! Redirecting...");
+      showSuccessToast("Welcome back! Redirecting...");
       router.push(callbackUrl);
       router.refresh();
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Could not sign in right now.";
       setFormError(message);
-      toast.error(message);
+      showErrorToast(message);
     }
   };
 
   const onInvalid = () => {
     setFormError("Please enter a valid email address and password.");
-    toast.error("Please check your sign-in details.");
+    showErrorToast("Please check your sign-in details.");
   };
 
   const handleGoogleSignIn = async () => {
@@ -113,7 +113,7 @@ export function SigninFormCard() {
         const message =
           error.message || "Google sign-in failed. Please try again.";
         setFormError(message);
-        toast.error(message);
+        showErrorToast(message);
         setIsGoogleLoading(false);
       }
     } catch (err) {
@@ -122,7 +122,7 @@ export function SigninFormCard() {
           ? err.message
           : "Unable to start Google sign-in.";
       setFormError(message);
-      toast.error(message);
+      showErrorToast(message);
       setIsGoogleLoading(false);
     }
   };
@@ -306,6 +306,7 @@ export function SigninFormCard() {
             <Button
               variant="link"
               size="sm"
+              nativeButton={false}
               className="h-auto p-0 text-xs font-medium text-primary hover:underline underline-offset-2"
               render={<Link href="/forgot-password">Forgot password?</Link>}
             />

@@ -40,12 +40,14 @@ export default async function PaymentCancelPage({
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Button
                 size="sm"
+                nativeButton={false}
                 className="h-9 px-4 text-xs font-semibold sm:text-sm"
                 render={<Link href={retryHref}>Try checkout again</Link>}
               />
               <Button
                 variant="outline"
                 size="sm"
+                nativeButton={false}
                 className="h-9 border-primary/25 px-4 text-xs font-semibold text-primary sm:text-sm"
                 render={<Link href="/#pricing">Back to pricing</Link>}
               />

@@ -5,4 +5,4 @@ export interface Response<T> {
   received?: string;
 }
 
-export type Method = "POST" | "DELETE" | "PATCH" | "PUT";
+export type Method = "POST" | "DELETE" | "PATCH" | "PUT" | "GET";
