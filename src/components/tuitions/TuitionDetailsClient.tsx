@@ -22,10 +22,12 @@ import { authClient } from "@/lib/auth-client";
 import {
   addTuitionBookmark,
   applyToTuition,
+  getMyApplications,
   getMyBookmarks,
   removeTuitionBookmark,
   type BookmarkRecord,
 } from "@/lib/actions/application";
+import { getPaidStatus } from "@/lib/actions/payment";
 import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,7 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { TuitionPostItem } from "@/types/dashboard";
+import type { ApplicationStatus, TuitionPostItem } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
 import { getTuitionById } from "@/lib/actions/tuition";
 
@@ -88,6 +90,9 @@ export function TuitionDetailsClient({
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [applicationStatus, setApplicationStatus] =
+    useState<ApplicationStatus | null>(null);
+  const [serverIsPro, setServerIsPro] = useState<boolean | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
   const rawUser = session?.user as Record<string, unknown> | undefined;
@@ -99,7 +104,8 @@ export function TuitionDetailsClient({
       : rawUser?.role === "student"
       ? "student"
       : null;
-  const userPlan = rawUser?.plan === "pro" ? "pro" : "free";
+  const userPlan =
+    serverIsPro === true || rawUser?.plan === "pro" ? "pro" : "free";
 
   const isStudent = userRole === "student";
   const isProStudent = isStudent && userPlan === "pro";
@@ -141,17 +147,36 @@ export function TuitionDetailsClient({
     if (!isStudent || sessionPending) return;
     let active = true;
 
-    getMyBookmarks().then((res) => {
-      if (!active) return;
-      if (!res.error && Array.isArray(res.data)) {
-        setBookmarks(res.data);
+    Promise.all([getMyBookmarks(), getMyApplications(), getPaidStatus()]).then(
+      ([bookmarksRes, appsRes, paidRes]) => {
+        if (!active) return;
+
+        if (!bookmarksRes.error && Array.isArray(bookmarksRes.data)) {
+          setBookmarks(bookmarksRes.data);
+        }
+
+        if (!appsRes.error && Array.isArray(appsRes.data)) {
+          const existingApp = appsRes.data.find(
+            (app) => String(app.tuitionId) === String(tuitionId)
+          );
+          if (existingApp) {
+            setSubmitted(true);
+            setApplicationStatus(existingApp.status || "pending");
+          }
+        }
+
+        if (!paidRes.error && paidRes.data) {
+          setServerIsPro(
+            Boolean(paidRes.data.isPro || paidRes.data.plan === "pro")
+          );
+        }
       }
-    });
+    );
 
     return () => {
       active = false;
     };
-  }, [isStudent, sessionPending]);
+  }, [isStudent, sessionPending, tuitionId]);
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
@@ -268,6 +293,7 @@ export function TuitionDetailsClient({
       }
 
       setSubmitted(true);
+      setApplicationStatus("pending");
       setApplyOpen(false);
       showSuccessToast("Application submitted! Status: pending.");
     } finally {
@@ -475,25 +501,37 @@ export function TuitionDetailsClient({
           {/* Apply & Bookmark Card */}
           <Card className="border-border bg-card shadow-xs">
             <CardContent className="space-y-3.5 p-5">
-              {submitted ? (
+              {sessionPending ? (
+                <Button
+                  type="button"
+                  disabled
+                  className="h-10 w-full text-xs font-semibold sm:text-sm"
+                >
+                  Checking account...
+                </Button>
+              ) : submitted ? (
                 <div className="space-y-3 rounded-xl border border-success/35 bg-success-tint p-4 text-xs text-success">
-                  <div className="flex items-center gap-2 font-bold">
+                  <div className="flex items-center gap-2 font-bold capitalize">
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
-                    <span>Application submitted (Pending)</span>
+                    <span>
+                      Application submitted ({applicationStatus || "pending"})
+                    </span>
                   </div>
                   <p className="text-foreground/80">
                     Your application has been sent to{" "}
                     <strong>{tuition.tutorName || tuition.tutorEmail}</strong>.
                   </p>
                   <Button
-                    type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setApplyOpen(true)}
+                    nativeButton={false}
                     className="w-full text-xs font-semibold"
-                  >
-                    Update or apply again
-                  </Button>
+                    render={
+                      <Link href="/dashboard/student/applications">
+                        View my applications
+                      </Link>
+                    }
+                  />
                 </div>
               ) : isStudent ? (
                 <Button
@@ -526,7 +564,7 @@ export function TuitionDetailsClient({
                 <Button
                   type="button"
                   variant="outline"
-                  disabled={bookmarkBusy || reachedFreeBookmarkLimit}
+                  disabled={bookmarkBusy}
                   onClick={handleToggleBookmark}
                   className={cn(
                     "h-10 w-full text-xs font-semibold",

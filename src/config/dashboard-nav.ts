@@ -26,6 +26,11 @@ export function getRoleNavItems(role: UserRole): NavItem[] {
         icon: "search",
       },
       {
+        label: "Bookmarks",
+        href: "/dashboard/student/bookmarks",
+        icon: "bookmark",
+      },
+      {
         label: "Feedback",
         href: "/dashboard/student/feedback",
         icon: "messageSquare",

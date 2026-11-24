@@ -18,7 +18,7 @@ export interface DashboardUser {
 export interface NavItem {
   label: string;
   href: string;
-  icon: "home" | "plus" | "list" | "users" | "checkSquare" | "creditCard" | "search" | "user" | "logout" | "messageSquare";
+  icon: "home" | "plus" | "list" | "users" | "checkSquare" | "creditCard" | "search" | "user" | "logout" | "messageSquare" | "bookmark";
   external?: boolean;
 }
 
