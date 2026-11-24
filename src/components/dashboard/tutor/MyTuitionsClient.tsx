@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ImagePlus, Plus, Trash2, X } from "lucide-react";
+import { BookOpen, ImagePlus, Plus, Trash2, X } from "lucide-react";
 import {
   deleteTuition,
   getMyTuitions,
@@ -317,7 +317,7 @@ export function MyTuitionsClient() {
               {[0, 1, 2].map((n) => (
                 <div
                   key={n}
-                  className="h-24 animate-pulse rounded-xl border border-border/60 bg-muted/40"
+                  className="h-44 animate-pulse rounded-xl border border-border/60 bg-muted/40 sm:h-24"
                 />
               ))}
             </div>
@@ -342,26 +342,49 @@ export function MyTuitionsClient() {
                 return (
                   <div
                     key={rowKey}
-                    className="space-y-3 rounded-xl border border-border/70 bg-muted/25 p-4 lg:flex justify-between"
+                    className="flex flex-col gap-4 rounded-xl border border-border/70 bg-muted/25 p-3.5 transition-colors hover:border-border sm:p-4 lg:flex-row lg:items-center lg:justify-between"
                   >
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-bold text-foreground sm:text-base">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {item.subject} · {item.classLevel} · ৳
-                        {Number(item.monthlyFee || 0).toLocaleString()}/month
-                      </p>
+                    <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                      {/* Responsive Banner Preview */}
+                      <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-lg border border-border/70 bg-secondary/50 sm:h-20 sm:w-28 md:w-32">
+                        {item.bannerUrl ? (
+                          <Image
+                            src={item.bannerUrl}
+                            alt={item.title}
+                            fill
+                            sizes="(max-width: 640px) 100vw, 128px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-gradient-to-br from-primary/15 via-secondary/70 to-primary/5 px-2 text-center">
+                            <BookOpen className="h-5 w-5 text-primary" />
+                            <span className="max-w-full truncate text-[10px] font-semibold text-primary/90 sm:hidden">
+                              {item.subject}
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
-                      {approval === "rejected" && (
-                        <p className="pt-0.5 text-xs font-medium text-destructive">
-                          Review note: Add a clearer weekly schedule or
-                          subject details and resubmit.
+                      <div className="min-w-0 space-y-1">
+                        <h3 className="truncate text-sm font-bold text-foreground sm:text-base">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {item.subject} · {item.classLevel} · ৳
+                          {Number(item.monthlyFee || 0).toLocaleString()}/month
                         </p>
-                      )}
+
+                        {approval === "rejected" && (
+                          <p className="pt-0.5 text-xs font-medium text-destructive">
+                            Review note:{" "}
+                            {item.rejectionNote ||
+                              "Add a clearer weekly schedule or subject details and resubmit."}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                    <div className="flex flex-wrap items-center gap-2 lg:shrink-0 lg:justify-end">
                       <span
                         className={cn(
                           "inline-flex h-7 items-center rounded-md border px-2.5 text-xs font-semibold capitalize",

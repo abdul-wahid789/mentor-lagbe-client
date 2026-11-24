@@ -1,12 +1,21 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import Image from "next/image";
+import { BookOpen, Search } from "lucide-react";
 import { updateTuitionApproval } from "@/lib/actions/admin";
 import { showErrorToast, showSuccessToast } from "@/lib/toaster";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -73,6 +82,9 @@ export function AdminTuitionApprovalsClient({
   const [rejectionNote, setRejectionNote] = useState("");
   const [noteError, setNoteError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [rejectTarget, setRejectTarget] = useState<TuitionPostItem | null>(
+    null
+  );
 
   const noteTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -115,13 +127,27 @@ export function AdminTuitionApprovalsClient({
     });
   }, [tuitions, searchQuery, statusFilter]);
 
+  const openRejectDialog = (item: TuitionPostItem) => {
+    setRejectTarget(item);
+    setRejectionNote(item.rejectionNote || "");
+    setNoteError(null);
+  };
+
+  const closeRejectDialog = () => {
+    if (updatingId) return;
+    setRejectTarget(null);
+    setRejectionNote("");
+    setNoteError(null);
+  };
+
   const handleDecision = async (
     tuitionId: string,
-    nextStatus: "approved" | "rejected"
+    nextStatus: "approved" | "rejected",
+    noteText?: string
   ) => {
     if (!tuitionId) return;
 
-    const trimmedNote = rejectionNote.trim();
+    const trimmedNote = (noteText ?? rejectionNote).trim();
 
     if (nextStatus === "rejected" && !trimmedNote) {
       setNoteError(
@@ -129,10 +155,6 @@ export function AdminTuitionApprovalsClient({
       );
       showErrorToast("Rejection note is required before rejecting.");
       noteTextareaRef.current?.focus();
-      noteTextareaRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
       return;
     }
 
@@ -167,6 +189,7 @@ export function AdminTuitionApprovalsClient({
 
       if (nextStatus === "rejected") {
         setRejectionNote("");
+        setRejectTarget(null);
       }
 
       showSuccessToast(
@@ -279,39 +302,61 @@ export function AdminTuitionApprovalsClient({
                     key={key}
                     className="flex flex-col justify-between gap-4 rounded-xl border border-border/80 bg-muted/25 p-4 sm:flex-row sm:items-center sm:p-5"
                   >
-                    <div className="space-y-1.5">
-                      <h3 className="text-base font-bold text-foreground">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {item.tutorName || "Tutor"}
-                        {submittedDate ? ` · Submitted ${submittedDate}` : ""}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.subject} · {item.classLevel} · {modeLabel} · ৳
-                        {Number(item.monthlyFee || 0).toLocaleString()}/month
-                      </p>
+                    <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                      {/* Responsive Banner Thumbnail */}
+                      <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-lg border border-border/70 bg-secondary/50 sm:h-20 sm:w-28 md:w-32">
+                        {item.bannerUrl ? (
+                          <Image
+                            src={item.bannerUrl}
+                            alt={item.title}
+                            fill
+                            sizes="(max-width: 640px) 100vw, 128px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-gradient-to-br from-primary/15 via-secondary/70 to-primary/5 px-2 text-center">
+                            <BookOpen className="h-5 w-5 text-primary" />
+                            <span className="max-w-full truncate text-[10px] font-semibold text-primary/90 sm:hidden">
+                              {item.subject}
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
-                      {existingNote && status === "rejected" && (
-                        <p className="text-xs text-destructive">
-                          Note: {existingNote}
+                      <div className="min-w-0 space-y-1.5">
+                        <h3 className="truncate text-base font-bold text-foreground">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {item.tutorName || "Tutor"}
+                          {submittedDate ? ` · Submitted ${submittedDate}` : ""}
                         </p>
-                      )}
+                        <p className="text-xs text-muted-foreground">
+                          {item.subject} · {item.classLevel} · {modeLabel} · ৳
+                          {Number(item.monthlyFee || 0).toLocaleString()}/month
+                        </p>
 
-                      <div className="pt-1">
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "rounded-md px-2.5 py-0.5 text-xs font-semibold",
-                            getApprovalBadgeStyle(status)
-                          )}
-                        >
-                          {formatApprovalLabel(status)}
-                        </Badge>
+                        {existingNote && status === "rejected" && (
+                          <p className="text-xs text-destructive">
+                            Note: {existingNote}
+                          </p>
+                        )}
+
+                        <div className="pt-1">
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "rounded-md px-2.5 py-0.5 text-xs font-semibold",
+                              getApprovalBadgeStyle(status)
+                            )}
+                          >
+                            {formatApprovalLabel(status)}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex flex-row items-center gap-2 sm:flex-col sm:items-stretch">
+                    <div className="flex shrink-0 flex-row items-center gap-2 sm:flex-col sm:items-stretch">
                       <Button
                         type="button"
                         size="sm"
@@ -331,7 +376,7 @@ export function AdminTuitionApprovalsClient({
                         variant="ghost"
                         size="sm"
                         disabled={isBusy || !rawId || status === "rejected"}
-                        onClick={() => handleDecision(rawId, "rejected")}
+                        onClick={() => openRejectDialog(item)}
                         className="h-9 rounded-lg bg-destructive-tint px-4 text-xs font-semibold text-destructive hover:bg-destructive/15 hover:text-destructive"
                       >
                         {status === "rejected" ? "Rejected" : "Reject"}
@@ -343,19 +388,51 @@ export function AdminTuitionApprovalsClient({
             </div>
           )}
 
-          {/* Rejection Note Field */}
-          <div className="space-y-2 pt-2">
+          {/* Card Footer Note */}
+          <p className="text-xs text-muted-foreground">
+            Only approved and active tuitions appear publicly.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Rejection Note Dialog */}
+      <Dialog
+        open={Boolean(rejectTarget)}
+        onOpenChange={(open) => {
+          if (!open) closeRejectDialog();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject tuition submission</DialogTitle>
+            <DialogDescription>
+              {rejectTarget ? (
+                <>
+                  Provide a clear reason for rejecting{" "}
+                  <span className="font-semibold text-foreground">
+                    {rejectTarget.title}
+                  </span>{" "}
+                  by {rejectTarget.tutorName || "Tutor"}.
+                </>
+              ) : (
+                "Explain what the tutor should update before resubmitting."
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2">
             <Label
               htmlFor="admin-rejection-note"
               className="text-xs font-semibold text-foreground"
             >
-              Rejection note (required when rejecting)
+              Rejection note
             </Label>
             <textarea
               ref={noteTextareaRef}
               id="admin-rejection-note"
               rows={4}
               value={rejectionNote}
+              disabled={Boolean(updatingId)}
               onChange={(e) => {
                 setRejectionNote(e.target.value);
                 if (noteError && e.target.value.trim()) {
@@ -376,12 +453,36 @@ export function AdminTuitionApprovalsClient({
             )}
           </div>
 
-          {/* Card Footer Note */}
-          <p className="text-xs text-muted-foreground">
-            Only approved and active tuitions appear publicly.
-          </p>
-        </CardContent>
-      </Card>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={Boolean(updatingId)}
+              onClick={closeRejectDialog}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              disabled={Boolean(updatingId) || !rejectTarget?._id}
+              onClick={() => {
+                if (rejectTarget?._id) {
+                  handleDecision(
+                    String(rejectTarget._id),
+                    "rejected",
+                    rejectionNote
+                  );
+                }
+              }}
+            >
+              {updatingId ? "Rejecting..." : "Confirm rejection"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
