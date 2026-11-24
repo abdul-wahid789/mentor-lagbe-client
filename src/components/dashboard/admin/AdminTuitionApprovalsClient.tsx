@@ -179,9 +179,7 @@ export function AdminTuitionApprovalsClient({
                 ...item,
                 approvalStatus: nextStatus,
                 isActive: nextStatus === "approved",
-                ...(nextStatus === "rejected"
-                  ? { rejectionNote: trimmedNote }
-                  : {}),
+                rejectionNote: nextStatus === "rejected" ? trimmedNote : "",
               }
             : item
         )
@@ -375,11 +373,11 @@ export function AdminTuitionApprovalsClient({
                         type="button"
                         variant="ghost"
                         size="sm"
-                        disabled={isBusy || !rawId || status === "rejected"}
+                        disabled={isBusy || !rawId}
                         onClick={() => openRejectDialog(item)}
                         className="h-9 rounded-lg bg-destructive-tint px-4 text-xs font-semibold text-destructive hover:bg-destructive/15 hover:text-destructive"
                       >
-                        {status === "rejected" ? "Rejected" : "Reject"}
+                        {status === "rejected" ? "Edit note" : "Reject"}
                       </Button>
                     </div>
                   </div>
