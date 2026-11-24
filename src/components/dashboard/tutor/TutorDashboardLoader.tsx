@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getMyTuitions } from "@/lib/actions/tuition";
 import { getTutorApplicants } from "@/lib/actions/application";
 import { showErrorToast } from "@/lib/toaster";
-import { TutorOverview } from "@/components/dashboard/TutorOverview";
+import { TutorOverview } from "@/components/dashboard/tutor/TutorOverview";
 import type {
   DashboardUser,
   StudentApplicationItem,

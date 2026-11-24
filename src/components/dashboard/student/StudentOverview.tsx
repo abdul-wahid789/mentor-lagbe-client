@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { DashboardUser, StudentApplicationItem } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
-import { StatCard } from "./StatCard";
+import { StatCard } from "../shared/StatCard";
 
 interface StudentOverviewProps {
   user: DashboardUser;
@@ -157,8 +157,8 @@ export function StudentOverview({
                           app.status === "accepted"
                             ? "border-success/30 bg-success-tint text-success"
                             : app.status === "rejected"
-                            ? "border-destructive/30 bg-destructive-tint text-destructive"
-                            : "border-warning/30 bg-warning-tint text-warning"
+                              ? "border-destructive/30 bg-destructive-tint text-destructive"
+                              : "border-warning/30 bg-warning-tint text-warning"
                         )}
                       >
                         {app.status}
@@ -222,8 +222,8 @@ export function StudentOverview({
                       app.status === "accepted"
                         ? "border-success/30 bg-success-tint text-success"
                         : app.status === "rejected"
-                        ? "border-destructive/30 bg-destructive-tint text-destructive"
-                        : "border-warning/30 bg-warning-tint text-warning"
+                          ? "border-destructive/30 bg-destructive-tint text-destructive"
+                          : "border-warning/30 bg-warning-tint text-warning"
                     )}
                   >
                     {app.status}

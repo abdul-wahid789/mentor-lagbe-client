@@ -8,7 +8,7 @@ import type {
   StudentApplicationItem,
   TuitionPostItem,
 } from "@/types/dashboard";
-import { StatCard } from "./StatCard";
+import { StatCard } from "../shared/StatCard";
 
 interface TutorOverviewProps {
   user: DashboardUser;
@@ -22,7 +22,7 @@ export function TutorOverview({
   applicants,
 }: TutorOverviewProps) {
 
-  
+
   const totalPosted = tuitions.length;
   const activeApproved = tuitions.filter(
     (t) => t.approvalStatus === "approved" && t.isActive

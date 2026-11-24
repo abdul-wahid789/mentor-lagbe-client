@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { DashboardUser, TuitionPostItem } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
-import { StatCard } from "./StatCard";
+import { StatCard } from "../shared/StatCard";
 
 interface MonthlyRevenuePoint {
   month: string;

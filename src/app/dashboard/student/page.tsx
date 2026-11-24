@@ -1,8 +1,8 @@
 import { requireDashboardUser } from "@/lib/dashboard-session";
 import { getServerToken } from "@/lib/server-token";
 import { getMyApplications } from "@/lib/actions/application";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { StudentOverview } from "@/components/dashboard/StudentOverview";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { StudentOverview } from "@/components/dashboard/student/StudentOverview";
 import type { StudentApplicationItem } from "@/types/dashboard";
 
 export default async function StudentDashboardPage() {
@@ -13,8 +13,8 @@ export default async function StudentDashboardPage() {
   const INITIAL_APPLICATIONS: StudentApplicationItem[] = applicationsRes.error
     ? []
     : Array.isArray(applicationsRes.data)
-    ? applicationsRes.data
-    : [];
+      ? applicationsRes.data
+      : [];
 
   return (
     <DashboardShell user={user} breadcrumbLabel="Overview">

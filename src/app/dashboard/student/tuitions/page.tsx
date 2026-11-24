@@ -1,6 +1,6 @@
 import { requireDashboardUser } from "@/lib/dashboard-session";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { DashboardBrowseTuitionsClient } from "@/components/dashboard/DashboardBrowseTuitionsClient";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { DashboardBrowseTuitionsClient } from "@/components/dashboard/tutor/DashboardBrowseTuitionsClient";
 
 export default async function DashboardStudentTuitionsPage() {
   const user = await requireDashboardUser(["student"]);

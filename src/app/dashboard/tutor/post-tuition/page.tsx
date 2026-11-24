@@ -1,6 +1,6 @@
 import { requireDashboardUser } from "@/lib/dashboard-session";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { PostTuitionForm } from "@/components/dashboard/PostTuitionForm";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { PostTuitionForm } from "@/components/dashboard/tutor/PostTuitionForm";
 
 export default async function PostTuitionPage() {
   const user = await requireDashboardUser(["tutor"]);

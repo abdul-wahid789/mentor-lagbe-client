@@ -2,8 +2,8 @@ import { requireDashboardUser } from "@/lib/dashboard-session";
 import { getServerToken } from "@/lib/server-token";
 import { getMyApplications } from "@/lib/actions/application";
 import { getTuitionFeedbacks } from "@/lib/actions/feedback";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { StudentFeedbackClient } from "@/components/dashboard/StudentFeedbackClient";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { StudentFeedbackClient } from "@/components/dashboard/student/StudentFeedbackClient";
 import type {
   StudentApplicationItem,
   TuitionFeedbackItem,

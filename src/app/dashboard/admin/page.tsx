@@ -6,8 +6,8 @@ import {
   getAllUsers,
   type AdminUserRecord,
 } from "@/lib/actions/admin";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { AdminOverview } from "@/components/dashboard/AdminOverview";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { AdminOverview } from "@/components/dashboard/admin/AdminOverview";
 import type {
   PaymentTransactionRecord,
   TuitionPostItem,

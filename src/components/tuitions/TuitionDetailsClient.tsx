@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -345,12 +346,13 @@ export function TuitionDetailsClient({
         <div className="space-y-6 lg:col-span-2">
           <Card className="overflow-hidden border-border bg-card shadow-xs">
             {tuition.bannerUrl && (
-              <div className="aspect-[16/9] w-full overflow-hidden border-b border-border bg-muted">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+              <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-border bg-muted">
+                <Image
                   src={tuition.bannerUrl}
                   alt={tuition.title}
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  className="object-cover"
                 />
               </div>
             )}

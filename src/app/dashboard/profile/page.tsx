@@ -1,6 +1,6 @@
 import { requireDashboardUser } from "@/lib/dashboard-session";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { MyProfileClient } from "@/components/dashboard/MyProfileClient";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { MyProfileClient } from "@/components/dashboard/shared/MyProfileClient";
 
 export default async function DashboardProfilePage() {
   const user = await requireDashboardUser();

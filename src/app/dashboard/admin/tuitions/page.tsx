@@ -1,8 +1,8 @@
 import { requireDashboardUser } from "@/lib/dashboard-session";
 import { getServerToken } from "@/lib/server-token";
 import { getAllTuitionsAdmin } from "@/lib/actions/admin";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { AdminTuitionApprovalsClient } from "@/components/dashboard/AdminTuitionApprovalsClient";
+import { DashboardShell } from "@/components/dashboard/shared/DashboardShell";
+import { AdminTuitionApprovalsClient } from "@/components/dashboard/admin/AdminTuitionApprovalsClient";
 import type { TuitionPostItem } from "@/types/dashboard";
 
 export default async function AdminTuitionApprovalsPage() {
